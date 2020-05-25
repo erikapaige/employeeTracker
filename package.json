@@ -20,6 +20,8 @@
   "homepage": "https://github.com/erikapaige/employeeTracker#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "inquirer": "^7.1.0",
+    "mysql": "^2.18.1",
     "mysql2": "^2.1.0"
   }
 }
