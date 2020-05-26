@@ -60,7 +60,10 @@ let viewAllEmployees = () => {
   db.query('SELECT * FROM employee', (err, data) => {
     if (err) { console.log (err) }
     console.table(data)
-  })
+  // db.query('SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id' FROM 'employee'), (err, data) => {
+  //   if (err) { console.log(err) }
+  //   console.table(data)
+  // }
 
   //needs to wait until query given answer
   prompt([
@@ -113,7 +116,10 @@ let viewEmployeeDepartment = () => {
 
 // viewEmployeeManager()
 
-// addEmployee()
+let addEmployee() => {
+
+  
+}
 
 // removeEmployee()
 
