@@ -16,33 +16,33 @@ let start = () => {
     type:'list',
     name:'questions',
     message: 'What would you like to do?',
-    choices: ['Add a department', 'Add a role', 'Add an employee', 'View a department', 'View a role', 'View an employee', 'Update an employee role']
+    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manger']
     }
   ])
   .then (({ questions }) =>{ 
     // confirm prompts displaying /processing data 
     // console.log(questions)
     switch(questions) {
-      case 'Add a department':
-        addDepartment()
+      case 'View All Employees':
+        viewAllEmployees()
         break
-      case 'Add a role':
-        addRole()
+      case 'View All Employees By Department':
+        viewEmployeeDepartment()
         break
-      case 'Add an employee':
+      case 'View All Employees by Manager':
+        viewEmployeeManager()
+        break
+      case 'Add Employee':
         addEmployee()
         break
-      case 'View a department':
-        viewDepartment()
+      case 'Remove Employee':
+        removeEmployee()
         break
-      case 'View a role':
-        viewRole()
+      case 'Update Employee Role':
+        updateEmployee()
         break
-      case 'View an employee':
-        viewEmployee()
-        break
-      case 'Update an employee role':
-        updateEmployeeRole()
+      case 'Update Employee Manager':
+        updateEmployeeManager()
         break
     }
   })
@@ -51,24 +51,16 @@ let start = () => {
 
 start()
 
-//function for user to add new department to table
-addDepartment()
+viewAllEmployees()
 
-//function for user to add a new role to table
-addRole()
+viewEmployeeDepartment()
 
-//function for employee to add a new employee to table
+viewEmployeeManager()
+
 addEmployee()
 
-//function to view departments
-viewDepartment()
+removeEmployee()
 
-//function to view roles
-viewRole()
+updateEmployee()
 
-//function to view employees
-viewEmployee()
-
-//function to view empoloyee with roles
-updateEmployeeRole()
-
+updateEmployeeManager()
