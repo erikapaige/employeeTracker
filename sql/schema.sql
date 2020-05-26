@@ -30,4 +30,6 @@ CREATE TABLE employee (
   FOREIGN KEY (role_id) REFERENCES role(id)
   -- variable that identifies the employee's manager, if they have one. Can be null
   manager_id INT
+  --foregin key that references role's id property
+  FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
