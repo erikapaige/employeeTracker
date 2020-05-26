@@ -3,6 +3,8 @@ const { writeFile, appendFile, readFile } = require('fs')
 //npm package 'inquirer'
 const { prompt } = require('inquirer')
 const { promisify } = require('util')
+const db = require('../db/index.js')
+const cTable = require ('console.table')
 
 let startAnswers = []
 // console.log('This is a command line application that allows employers to manage departments, roles, and employees in their company. The application permits employers to view, add, update or delete specific data points in their company employee database.')
@@ -44,6 +46,9 @@ let start = () => {
       case 'Update Employee Manager':
         updateEmployeeManager()
         break
+      case 'Exit':
+        exit()
+        break
     }
   })
   .catch(err => console.log(err))
@@ -51,16 +56,67 @@ let start = () => {
 
 start()
 
-viewAllEmployees()
+let viewAllEmployees = () => {
+  db.query('SELECT * FROM employee', (err, data) => {
+    if (err) { console.log (err) }
+    console.table(data)
+  })
 
-viewEmployeeDepartment()
+  //needs to wait until query given answer
+  prompt([
+    {
+      type: 'list',
+      name: 'update',
+      message: 'Would you like to continue updating the data?',
+      choices: ['Yes', 'No']
+    }
+  ])
+    .then(({ update }) => {
+      switch (update) {
+        case 'Yes':
+          start()
+          break
+        case 'No':
+          exit()
+          break  
+      }
+    })
+    .catch (err => console.log(err))
+}    
 
-viewEmployeeManager()
+let viewEmployeeDepartment = () => {
+  db.query('SELECT * FROM department', (err, data) => {
+  if (err) { console.log(err) }
+  console.table(data)
+  })
+  //needs to wait until query given answer
+  prompt([
+    {
+      type: 'list',
+      name: 'update',
+      message: 'Would you like to continue updating the data?',
+      choices: ['Yes', 'No']
+    }
+  ])
+    .then(({ update }) => {
+      switch (update) {
+        case 'Yes':
+          start()
+          break
+        case 'No':
+          exit()
+          break
+      }
+    })
+    .catch(err => console.log(err))
+} 
 
-addEmployee()
+// viewEmployeeManager()
 
-removeEmployee()
+// addEmployee()
 
-updateEmployee()
+// removeEmployee()
 
-updateEmployeeManager()
+// updateEmployee()
+
+// updateEmployeeManager()
