@@ -107,6 +107,14 @@ let viewEmployeeManager = () => {
   decision()
 } 
 
+let viewRoles = () => {
+  // query database, use AS to reformat table title
+  connection.query('SELECT role.id AS "role id", role.title AS "title", role.salary AS "salary", department_id AS "department id" FROM role', (err, res) => {
+    if (err) { console.log (err) }
+    //log results from SELECT statement
+    console.table(res)
+  })
+}
 // function to add employee to database
 let addEmployee = () => {
 
