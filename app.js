@@ -32,7 +32,7 @@ let start = () => {
     type:'list',
     name:'questions',
     message: 'What would you like to do?',
-    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manger', 'Exit']
+    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'Add Employee', 'Add Role', 'Update Employee Role', 'Update Employee Manger', 'Exit']
     }
   ])
   .then (({ questions }) =>{ 
@@ -52,18 +52,19 @@ let start = () => {
         addEmployee()
         break
       case 'Remove Employee':
-        removeEmployee()
+        addRole()
         break
       case 'Update Employee Role':
-        updateEmployee()
+        addDepartment()
         break
       case 'Update Employee Manager':
-        updateEmployeeManager()
+        updateEmployeeRole()
         break
       case 'Exit':
-        console.log('exit')
-        connection.end()
-        process.exit
+        exit()
+        // console.log('exit')
+        // connection.end()
+        // process.exit
         break
     }
   })
@@ -76,27 +77,8 @@ let viewAllEmployees = () => {
     if (err) { console.log(err) }
     //log results from SELECT statement
     console.table(res)
-
-  /// user prompt: continue to add data or exit
-  prompt([
-    {
-      type: 'list',
-      name: 'update',
-      message: 'Would you like to continue updating the data?',
-      choices: ['Yes', 'No']
-    }
-  ])
-    .then(({ update }) => {
-      switch (update) {
-        case 'Yes':
-          start()
-          break
-        case 'No':
-          exit()
-          break  
-      }
-    })
-    .catch (err => console.log(err))
+  // function to prompt user: continue to add data or exit
+  decision()
   })  
 }    
 
@@ -105,28 +87,8 @@ let viewEmployeeDepartment = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS "department", role.id AS "role id" FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id', (err, res) => {
   if (err) { console.log(err) }
   console.table(res)
- 
-  // user prompt: continue to add data or exit
-  prompt([
-    {
-      type: 'list',
-      name: 'update',
-      message: 'Would you like to continue updating the data?',
-      choices: ['Yes', 'No']
-    }
-  ])
-    .then(({ update }) => {
-      switch (update) {
-        case 'Yes':
-          start()
-          break
-        case 'No':
-          exit()
-          break
-      }
-    })
-    .catch(err => console.log(err))
   })
+  decision()
 } 
 
 // function to view employee by manager
@@ -134,31 +96,12 @@ let viewEmployeeManager = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, data) => {
     if (err) { console.log(err) }
     console.table(data)
-
-    /// user prompt: continue to add data or exit
-    prompt([
-      {
-        type: 'list',
-        name: 'update',
-        message: 'Would you like to continue updating the data?',
-        choices: ['Yes', 'No']
-      }
-    ])
-      .then(({ update }) => {
-        switch (update) {
-          case 'Yes':
-            start()
-            break
-          case 'No':
-            exit()
-            break
-        }
-      })
-      .catch(err => console.log(err))
   })
+  // function to prompt user: continue to add data or exit
+  decision()
 } 
 
-//function to add employee
+// function to add employee to database
 let addEmployee = () => {
 
   prompt([
@@ -216,31 +159,28 @@ let addEmployee = () => {
         role_id: `${newEmployeeRole}`
       }, (err, res) => {
         if (err) { console.log(err) }
+        //is there a way to show new employee?
         console.table(res.affectedRows + "employee updated!")
       })
     })
     .catch(err => console.log(err))
-    // prompt([
-    //   {
-    //     type: 'input',
-    //     name: 'addEmp',
-    //     message: 'Would you like to continue updating the data?',
-    //     choices: ['Yes', 'No']
-    //   }
-    // ])
-    //   .then(({ update }) => {
-    //     switch (update) {
-    //       case 'Yes':
-    //         start()
-    //         break
-    //       case 'No':
-    //         exit()
-    //         break
-    //     }
-    //   })
-    //   .catch(err => console.log(err))
 }
 
+// function to add role to database
+// let addRole = () => {
+
+// }
+
+// function to add a department to database
+// let addDepartment = () => {
+//   prompt([
+//     {
+//       type: 'input',
+//       name: 'firstName',
+//       message: `Enter the employee's first name:`
+//     },
+
+// }
 // EXTRA IF HAVE TIME
 //function to allow user to remove an employee
 // let removeEmployee = () => {
@@ -249,35 +189,35 @@ let addEmployee = () => {
 //     console.table(res)
     // console.log('Employee has been removed from database')
 
-    // user prompt: continue to add data or exit
-    // prompt([
-    //   {
-    //     type: 'list',
-    //     name: 'update',
-    //     message: 'Would you like to continue updating the data?',
-    //     choices: ['Yes', 'No']
-    //   }
-    // ])
-    //   .then(({ update }) => {
-    //     switch (update) {
-    //       case 'Yes':
-    //         start()
-    //         break
-    //       case 'No':
-    //         exit()
-    //         break
-    //     }
-    //   })
-    //   .catch(err => console.log(err))
+// function to prompt user: continue to add data or exit
+// decision()
 //   })
 // } 
 
+// function that asks user if want to continue after each section
+let decision = () => {
+  prompt([
+      {
+        type: 'input',
+        name: 'addEmp',
+        message: 'Would you like to continue updating the data?',
+        choices: ['Yes', 'No']
+      }
+    ])
+      .then(({ update }) => {
+        switch (update) {
+          case 'Yes':
+            start()
+            break
+          case 'No':
+            exit()
+            break
+        }
+      })
+      .catch(err => console.log(err))
+}
 
-// updateEmployee()
-
-// updateEmployeeManager()
-
-// exit function
+// function to exit the application
 let exit = () => {
   console.log('exit')
   connection.end()
