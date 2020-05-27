@@ -283,10 +283,10 @@ let addRole = () => {
     //   //is there a way to show the new added role?
     //   console.table(res.affectedRows + "role added!\n")
     // })
+    //function to prompt user: continue to add data or exit
+    decision() 
   })
   .catch(err => console.log(err))
-  //function to prompt user: continue to add data or exit
-  decision() 
 }
 
 // function to add a department to database
