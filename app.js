@@ -100,40 +100,41 @@ let viewAllEmployees = () => {
   })  
 }    
 
-// let viewEmployeeDepartment = () => {
-//   db.query('SELECT * FROM department', (err, data) => {
-//   if (err) { console.log(err) }
-//   console.table(data)
+//ability to view employee with department name
+let viewEmployeeDepartment = () => {
+  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS "department", role.id AS "role id" FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id', (err, res) => {
+  if (err) { console.log(err) }
+  console.table(res)
  
 //   //needs to wait until query given answer
-//   prompt([
-//     {
-//       type: 'list',
-//       name: 'update',
-//       message: 'Would you like to continue updating the data?',
-//       choices: ['Yes', 'No']
-//     }
-//   ])
-//     .then(({ update }) => {
-//       switch (update) {
-//         case 'Yes':
-//           start()
-//           break
-//         case 'No':
-//           exit()
-//           break
-//       }
-//     })
-//     .catch(err => console.log(err))
-//   })
-// } 
+  prompt([
+    {
+      type: 'list',
+      name: 'update',
+      message: 'Would you like to continue updating the data?',
+      choices: ['Yes', 'No']
+    }
+  ])
+    .then(({ update }) => {
+      switch (update) {
+        case 'Yes':
+          start()
+          break
+        case 'No':
+          exit()
+          break
+      }
+    })
+    .catch(err => console.log(err))
+  })
+} 
 
 // function that sorts employees by manager
 let viewEmployeeManager = () => {
-  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, res) => {
+  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, data) => {
     if (err) { console.log(err) }
     // log results from SELECT statement
-    console.table(res)
+    console.table(data)
 
     // user prompt if would like to continue to add data or exit
     // prompt([
