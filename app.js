@@ -81,7 +81,7 @@ let start = () => {
 let viewAllEmployees = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id',  (err, res) => {
     if (err) { console.log(err) }
-    //log results from SELECT statement
+    // use console.table to view results and format into table
     console.table(res)
   // function to prompt user: continue to add data or exit
   decision()
@@ -92,6 +92,7 @@ let viewAllEmployees = () => {
 let viewEmployeeDepartment = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS "department", role.id AS "role id" FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id', (err, res) => {
   if (err) { console.log(err) }
+  // use console.table to view results and format into table
   console.table(res)
   })
   decision()
@@ -101,20 +102,34 @@ let viewEmployeeDepartment = () => {
 let viewEmployeeManager = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, data) => {
     if (err) { console.log(err) }
+    // use console.table to view results and format into table
     console.table(data)
   })
   // function to prompt user: continue to add data or exit
   decision()
 } 
 
+// function to view roles in database
 let viewRoles = () => {
   // query database, use AS to reformat table title
   connection.query('SELECT role.id AS "role id", role.title AS "title", role.salary AS "salary", department_id AS "department id" FROM role', (err, res) => {
     if (err) { console.log (err) }
-    //log results from SELECT statement
+    // use console.table to view results and format into table
     console.table(res)
   })
 }
+
+// function to view departments in database
+let viewDepartments = () => {
+  //query database
+  connection.query('SELECT * FROM department', (err, res) => {
+    if (err) { console.log (err) }
+    // use console.table to view results and format into table
+    console.table(res)
+  })
+}
+
+
 // function to add employee to database
 let addEmployee = () => {
 
