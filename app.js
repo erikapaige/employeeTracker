@@ -18,13 +18,12 @@ const connection = mysql.createConnection({
 //connecting file to mysql
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
+  // console.log("connected as id " + connection.threadId + "\n");
+  console.log('This is a command line application that allows employers to manage departments, roles, and employees in their company. The application permits employers to view, add, update or delete specific data points in their company employee database.')
   start();
 });
 
-// console.log('This is a command line application that allows employers to manage departments, roles, and employees in their company. The application permits employers to view, add, update or delete specific data points in their company employee database.')
-
-//npm start is function to being command line
+//npm start is function to begin command line
 
 // start questions to ask user
 let start = () => {
@@ -37,7 +36,7 @@ let start = () => {
     }
   ])
   .then (({ questions }) =>{ 
-    // confirm prompts displaying /processing data 
+    // confirm prompts displaying / processing data 
     // console.log(questions)
     switch(questions) {
       case 'View All Employees':
@@ -72,36 +71,34 @@ let start = () => {
 }
 
 
-// let viewAllEmployees = () => {
-//   console.log('')
+let viewAllEmployees = () => {
+  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id', function(err, res) {
+    if (err) { console.log(err) }
+    //log results from SELECT statement
+    console.table(res)
 
-//   let query = "SELECT employee.id, first_name, last_name, role.title, department.name, role.salary"
-//   db.query(query, (err, answer) => {
-//     if (err) { console.log(err) }
-//     console.table(answer)
-//   })
-
-  //needs to wait until query given answer
-  // prompt([
-  //   {
-  //     type: 'list',
-  //     name: 'update',
-  //     message: 'Would you like to continue updating the data?',
-  //     choices: ['Yes', 'No']
-  //   }
-  // ])
-  //   .then(({ update }) => {
-  //     switch (update) {
-  //       case 'Yes':
-  //         start()
-  //         break
-  //       case 'No':
-  //         exit()
-  //         break  
-  //     }
-  //   })
-  //   .catch (err => console.log(err))
-// }    
+  // needs to wait until query given answer
+  prompt([
+    {
+      type: 'list',
+      name: 'update',
+      message: 'Would you like to continue updating the data?',
+      choices: ['Yes', 'No']
+    }
+  ])
+    .then(({ update }) => {
+      switch (update) {
+        case 'Yes':
+          start()
+          break
+        case 'No':
+          exit()
+          break  
+      }
+    })
+    .catch (err => console.log(err))
+  })  
+}    
 
 // let viewEmployeeDepartment = () => {
 //   db.query('SELECT * FROM department', (err, data) => {
@@ -160,3 +157,9 @@ let start = () => {
 // updateEmployee()
 
 // updateEmployeeManager()
+
+let exit = () => {
+  console.log('exit')
+  connection.end()
+  process.exit
+}
