@@ -32,7 +32,7 @@ let start = () => {
     type:'list',
     name:'questions',
     message: 'What would you like to do?',
-    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'View Roles', 'View Departments', 'Add Employee', 'Add Role', 'Update Employee Role', 'Update Employee Manger', 'Exit']
+    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'View Roles', 'View Departments', 'Add Employee', 'Add Role', 'Add Department', 'Update Employee Role', 'Exit']
     }
   ])
   .then (({ questions }) =>{ 
@@ -57,13 +57,13 @@ let start = () => {
       case 'Add Employee':
         addEmployee()
         break
-      case 'Remove Employee':
+      case 'Add Role':
         addRole()
         break
-      case 'Update Employee Role':
+      case 'Add Department':
         addDepartment()
         break
-      case 'Update Employee Manager':
+      case 'Update Employee Role':
         updateEmployeeRole()
         break
       case 'Exit':
@@ -192,48 +192,59 @@ let addEmployee = () => {
       }, (err, res) => {
         if (err) { console.log(err) }
         //is there a way to show new employee?
-        console.table(res.affectedRows + "employee updated!")
+        console.table(res.affectedRows + "employee added!\n")
       })
     })
     .catch(err => console.log(err))
 }
 
 // function to add role to database
-let addRole = () => {
-  prompt([
-    {
-      type: 'input',
-      name: 'titleName',
-      message: `Enter the role you would like to add:`
-    },
-    {
-      type: 'number',
-      name: 'newSalary',
-      message: `Enter the salary for the added role:`
-    },
-    {
-      type: 'input',
-      name: 'selectDept',
-      message: `Enter the department the new role corresponds to:`
-    }
-  ])
-  .then (({ titleName, newSalary, selectDept }) =>{
-    console.log(titleName, newSalary, selectDept)
-    // connection.query('INSERT INTO role SET')
-  })
-  .catch(err => console.log(err))
-}
-
-// function to add a department to database
-// let addDepartment = () => {
+// let addRole = () => {
 //   prompt([
 //     {
 //       type: 'input',
-//       name: 'firstName',
-//       message: `Enter the employee's first name:`
+//       name: 'titleName',
+//       message: `Enter the role you would like to add:`
 //     },
-
+//     {
+//       type: 'number',
+//       name: 'newSalary',
+//       message: `Enter the salary for the added role:`
+//     },
+//     {
+//       type: 'input',
+//       name: 'selectDept',
+//       message: `Enter the department the new role corresponds to:`
+//     }
+//   ])
+//   .then (({ titleName, newSalary, selectDept }) =>{
+//     console.log(titleName, newSalary, selectDept)
+//     // connection.query('INSERT INTO role SET')
+//   })
+//   .catch(err => console.log(err))
 // }
+
+// function to add a department to database
+let addDepartment = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'newDeptName',
+      message: `Enter the department you would like to add:`
+    }
+  ])
+  .then(({ newDeptName }) => {
+    connection.query('INSERT INTO department SET ?', 
+    {
+      name: `${newDeptName}`
+    }, (err, res) => {
+      if (err) { console.log(err) }
+      console.table(res.affectedRows + "department added!\n")
+      //why does start prompt work and not prompt?
+      start()
+    })
+  })  
+}
 // EXTRA IF HAVE TIME
 //function to allow user to remove an employee
 // let removeEmployee = () => {
