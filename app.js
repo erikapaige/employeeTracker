@@ -5,6 +5,7 @@ const { prompt } = require('inquirer')
 // npm package to print rows to console
 const cTable = require ('console.table')
 
+
 // establishes connection params to database
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -25,8 +26,6 @@ connection.connect(function (err) {
   console.log('This is a command line application that allows employers to manage departments, roles, and employees in their company. The application permits employers to view, add, update or delete specific data points in their company employee database.')
   start();
 });
-
-//npm start is function to begin command line
 
 // start questions to ask user
 let start = () => {
@@ -81,14 +80,14 @@ let start = () => {
 let decision = () => {
   prompt([
     {
-      type: 'input',
-      name: 'addEmp',
+      type: 'list',
+      name: 'decision',
       message: 'Would you like to continue updating the data?',
       choices: ['Yes', 'No']
     }
   ])
-    .then(({ update }) => {
-      switch (update) {
+    .then(({ decision }) => {
+      switch (decision) {
         case 'Yes':
           start()
           break
@@ -104,6 +103,8 @@ let decision = () => {
 let viewAllEmployees = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id',  (err, res) => {
     if (err) { console.log(err) }
+    //add line break
+    console.log('\n')
     // use console.table to view results and format into table
     console.table(res)
     //function to prompt user: continue to add data or exit
@@ -115,28 +116,39 @@ let viewAllEmployees = () => {
 let viewEmployeeDepartment = () => {
   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS "department", role.id AS "role id" FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id', (err, res) => {
   if (err) { console.log(err) }
+  //add line break
+  console.log('\n')
   // use console.table to view results and format into table
   console.table(res)
-  })
+  //function to prompt user: continue to add data or exit
   decision()
+  })
 } 
 
-// function to view employee by manager
-let viewEmployeeManager = () => {
-  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, data) => {
-    if (err) { console.log(err) }
-    // use console.table to view results and format into table
-    console.table(data)
-  })
-} 
+// // function to view employee by manager
+// let viewEmployeeManager = () => {
+//   connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, res) => {
+//     if (err) { console.log(err) }
+//     //add line break
+//     console.log('\n')
+//     // use console.table to view results and format into table
+//     console.table(res)
+//     //function to prompt user: continue to add data or exit
+//     decision()
+//   })
+// } 
 
 // function to view roles in database
 let viewRoles = () => {
   // query database, use AS to reformat table title
   connection.query('SELECT role.id AS "role id", role.title AS "title", role.salary AS "salary", department_id AS "department id" FROM role', (err, res) => {
     if (err) { console.log (err) }
+    //add line break
+    console.log('\n')
     // use console.table to view results and format into table
     console.table(res)
+  //function to prompt user: continue to add data or exit
+  decision()   
   })
 }
 
@@ -145,8 +157,12 @@ let viewDepartments = () => {
   //query database
   connection.query('SELECT * FROM department', (err, res) => {
     if (err) { console.log (err) }
+    //add line break
+    console.log('\n')
     // use console.table to view results and format into table
     console.table(res)
+  //function to prompt user: continue to add data or exit
+  decision()   
   })
 }
 
@@ -167,8 +183,9 @@ let addEmployee = () => {
     {
       type: 'list',
       name: 'newEmployeeRole',
-      message: `What is the employee's role?`,
-      choices: [
+      message: `Select the employee's role:`,
+      choices: 
+      [
         {
           name: 'operation manager',
           value: 1
@@ -200,7 +217,7 @@ let addEmployee = () => {
       ]
     }
   ])
-    .then(({ firstName, lastName, newEmployeeRole, }) => {
+    .then(({ firstName, lastName, newEmployeeRole }) => {
       //console.log to check that responses render
       //console.log(firstName, lastName, newEmployeeRole)
       
@@ -211,9 +228,13 @@ let addEmployee = () => {
         role_id: `${newEmployeeRole}`
       }, (err, res) => {
         if (err) { console.log(err) }
+        //add line break
+        console.log('\n')
         //is there a way to show new employee?
         console.table(res.affectedRows + "employee added!\n")
       })
+      //function to prompt user: continue to add data or exit
+      decision()  
     })
     .catch(err => console.log(err))
 }
@@ -235,7 +256,7 @@ let addRole = () => {
     {
       type: 'list',
       name: 'selectDept',
-      message: `Enter the department the new role corresponds to:`,
+      message: `Select the department the new role corresponds to:`,
       choices: [
       {
         name:'operations',
@@ -270,11 +291,15 @@ let addRole = () => {
     //   department_id: `${selectDept}.value`
     // }, (err, res) => {
     //   if (err) { console.log(err) }
+        //add line break
+        // console.log('\n')
     //   //is there a way to show the new added role?
     //   console.table(res.affectedRows + "role added!\n")
     // })
   })
   .catch(err => console.log(err))
+  //function to prompt user: continue to add data or exit
+  decision() 
 }
 
 // function to add a department to database
@@ -292,47 +317,86 @@ let addDepartment = () => {
       name: `${newDeptName}`
     }, (err, res) => {
       if (err) { console.log(err) }
+      //add line break
+      console.log('\n')
       console.table(res.affectedRows + "department added!\n")
-      //why does start prompt work and not prompt?
-      start()
+    //function to prompt user: continue to add data or exit
+    decision() 
     })
   })  
 }
-// EXTRA IF HAVE TIME
-//function to allow user to remove an employee
-// let removeEmployee = () => {
-//   connection.query('', (err, res) => {
-//     if (err) { console.log(err) }
-//     console.table(res)
-    // console.log('Employee has been removed from database')
 
-// function to prompt user: continue to add data or exit
-// decision()
-//   })
-// } 
+updateEmployeeRole = () => {
+  //function to allow user to view current employee list ** doesn't allow for prompt to process
+  // currentEmployeeList()
 
-// // function that asks user if want to continue after each section
-// let decision = () => {
-//   prompt([
-//       {
-//         type: 'input',
-//         name: 'addEmp',
-//         message: 'Would you like to continue updating the data?',
-//         choices: ['Yes', 'No']
-//       }
-//     ])
-//       .then(({ update }) => {
-//         switch (update) {
-//           case 'Yes':
-//             start()
-//             break
-//           case 'No':
-//             exit()
-//             break
-//         }
-//       })
-//       .catch(err => console.log(err))
-// }
+  //add line break
+  console.log('\n')
+
+  prompt([
+    {
+      type: 'input',
+      name: 'lastName',
+      message: `Enter the last name of the employee:`
+    },
+    {
+      type: 'input',
+      name: 'firstName',
+      message: `Enter the first name of the employee:`
+    },
+    {
+      type: 'list',
+      name: 'updateEmployeeRole',
+      message: `Select the employee's new role:`,
+      choices: 
+      [
+        {
+          name: 'operation manager',
+          value: 1
+        },
+        {
+          name: 'accounting manager',
+          value: 2
+        },
+        {
+          name: 'sales manager',
+          value: 3
+        },
+        {
+          name: 'engineering manager',
+          value: 4
+        },
+        {
+          name: 'sales rep',
+          value: 5
+        },
+        {
+          name: 'engineer',
+          value: 6
+        },
+        {
+          name: 'human resource representative',
+          value: 7
+        }
+      ]
+    }
+  ]) 
+    .then(({ firstName, lastName, updateEmployeeRole }) => {
+      //console.log to check that responses render
+      console.log(firstName, lastName, updateEmployeeRole)
+      // function to prompt user: continue to add data or exit
+      decision() 
+  })
+  .catch(err => console.log(err))
+}
+
+// function that allows user to see list of employees
+let currentEmployeeList = () => {
+  connection.query('SELECT * FROM employee', (err, res) => {
+  if (err) { console.log(err) }
+  console.table(res)
+  })
+}
 
 // function to exit the application
 let exit = () => {
