@@ -1,8 +1,11 @@
-//npm package 'inquirer'
+// npm package mysql
 const mysql = require('mysql2')
+// npm package 'inquirer'
 const { prompt } = require('inquirer')
+// npm package to print rows to console
 const cTable = require ('console.table')
 
+// establishes connection params to database
 const connection = mysql.createConnection({
   host: 'localhost',
   // port
@@ -15,7 +18,7 @@ const connection = mysql.createConnection({
   database: 'company_db'
 })
 
-//connecting file to mysql
+// connecting file to database
 connection.connect(function (err) {
   if (err) throw err;
   // console.log("connected as id " + connection.threadId + "\n");
@@ -68,13 +71,33 @@ let start = () => {
         break
       case 'Exit':
         exit()
-        // console.log('exit')
-        // connection.end()
-        // process.exit
         break
     }
   })
   .catch(err => console.log(err))
+}
+
+// function that asks user if want to continue after each section
+let decision = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'addEmp',
+      message: 'Would you like to continue updating the data?',
+      choices: ['Yes', 'No']
+    }
+  ])
+    .then(({ update }) => {
+      switch (update) {
+        case 'Yes':
+          start()
+          break
+        case 'No':
+          exit()
+          break
+      }
+    })
+    .catch(err => console.log(err))
 }
 
 // function that creates a table of employees and their data
@@ -83,8 +106,8 @@ let viewAllEmployees = () => {
     if (err) { console.log(err) }
     // use console.table to view results and format into table
     console.table(res)
-  // function to prompt user: continue to add data or exit
-  decision()
+    //function to prompt user: continue to add data or exit
+    decision()
   })  
 }    
 
@@ -105,8 +128,6 @@ let viewEmployeeManager = () => {
     // use console.table to view results and format into table
     console.table(data)
   })
-  // function to prompt user: continue to add data or exit
-  decision()
 } 
 
 // function to view roles in database
@@ -128,7 +149,6 @@ let viewDepartments = () => {
     console.table(res)
   })
 }
-
 
 // function to add employee to database
 let addEmployee = () => {
@@ -181,7 +201,7 @@ let addEmployee = () => {
     }
   ])
     .then(({ firstName, lastName, newEmployeeRole, }) => {
-      //console.log to check the response
+      //console.log to check that responses render
       //console.log(firstName, lastName, newEmployeeRole)
       
       connection.query('INSERT INTO employee SET ?', 
@@ -199,30 +219,63 @@ let addEmployee = () => {
 }
 
 // function to add role to database
-// let addRole = () => {
-//   prompt([
-//     {
-//       type: 'input',
-//       name: 'titleName',
-//       message: `Enter the role you would like to add:`
-//     },
-//     {
-//       type: 'number',
-//       name: 'newSalary',
-//       message: `Enter the salary for the added role:`
-//     },
-//     {
-//       type: 'input',
-//       name: 'selectDept',
-//       message: `Enter the department the new role corresponds to:`
-//     }
-//   ])
-//   .then (({ titleName, newSalary, selectDept }) =>{
-//     console.log(titleName, newSalary, selectDept)
-//     // connection.query('INSERT INTO role SET')
-//   })
-//   .catch(err => console.log(err))
-// }
+let addRole = () => {
+
+  prompt([
+    {
+      type: 'input',
+      name: 'titleName',
+      message: `Enter the role you would like to add:`
+    },
+    {
+      type: 'number',
+      name: 'newSalary',
+      message: `Enter the salary for the added role:`
+    },
+    {
+      type: 'list',
+      name: 'selectDept',
+      message: `Enter the department the new role corresponds to:`,
+      choices: [
+      {
+        name:'operations',
+        value: 1
+      },
+      {
+        name: 'accounting',
+        value: 2
+      },
+      {
+        name: 'sales',
+        value: 3
+      },
+      {
+        name: 'engineering',
+        value: 4
+      },
+      {
+        name: 'human resources',
+        value: 5
+      }
+     ]
+    }
+  ])
+  .then (({ titleName, newSalary, selectDept }) =>{
+    //console.log to check that responses render
+    console.log(titleName, newSalary, selectDept)
+    // connection.query('INSERT INTO role SET ?',
+    // {
+    //   title: `${titleName}`,
+    //   salary: `${newSalary}`,
+    //   department_id: `${selectDept}.value`
+    // }, (err, res) => {
+    //   if (err) { console.log(err) }
+    //   //is there a way to show the new added role?
+    //   console.table(res.affectedRows + "role added!\n")
+    // })
+  })
+  .catch(err => console.log(err))
+}
 
 // function to add a department to database
 let addDepartment = () => {
@@ -258,28 +311,28 @@ let addDepartment = () => {
 //   })
 // } 
 
-// function that asks user if want to continue after each section
-let decision = () => {
-  prompt([
-      {
-        type: 'input',
-        name: 'addEmp',
-        message: 'Would you like to continue updating the data?',
-        choices: ['Yes', 'No']
-      }
-    ])
-      .then(({ update }) => {
-        switch (update) {
-          case 'Yes':
-            start()
-            break
-          case 'No':
-            exit()
-            break
-        }
-      })
-      .catch(err => console.log(err))
-}
+// // function that asks user if want to continue after each section
+// let decision = () => {
+//   prompt([
+//       {
+//         type: 'input',
+//         name: 'addEmp',
+//         message: 'Would you like to continue updating the data?',
+//         choices: ['Yes', 'No']
+//       }
+//     ])
+//       .then(({ update }) => {
+//         switch (update) {
+//           case 'Yes':
+//             start()
+//             break
+//           case 'No':
+//             exit()
+//             break
+//         }
+//       })
+//       .catch(err => console.log(err))
+// }
 
 // function to exit the application
 let exit = () => {
