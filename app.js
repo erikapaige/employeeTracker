@@ -32,7 +32,7 @@ let start = () => {
     type:'list',
     name:'questions',
     message: 'What would you like to do?',
-    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'Add Employee', 'Add Role', 'Update Employee Role', 'Update Employee Manger', 'Exit']
+    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'View Roles', 'View Departments', 'Add Employee', 'Add Role', 'Update Employee Role', 'Update Employee Manger', 'Exit']
     }
   ])
   .then (({ questions }) =>{ 
@@ -47,6 +47,12 @@ let start = () => {
         break
       case 'View All Employees by Manager':
         viewEmployeeManager()
+        break
+      case 'View Roles':
+        viewRoles()
+        break
+      case 'View Departments':
+        viewDepartments()
         break
       case 'Add Employee':
         addEmployee()
@@ -151,7 +157,10 @@ let addEmployee = () => {
       ]
     }
   ])
-    .then(({ firstName, lastName, newEmployeeRole, })=> {
+    .then(({ firstName, lastName, newEmployeeRole, }) => {
+      //console.log to check the response
+      //console.log(firstName, lastName, newEmployeeRole)
+      
       connection.query('INSERT INTO employee SET ?', 
       {
         first_name: `${firstName}`,
@@ -167,9 +176,30 @@ let addEmployee = () => {
 }
 
 // function to add role to database
-// let addRole = () => {
-
-// }
+let addRole = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'titleName',
+      message: `Enter the role you would like to add:`
+    },
+    {
+      type: 'number',
+      name: 'newSalary',
+      message: `Enter the salary for the added role:`
+    },
+    {
+      type: 'input',
+      name: 'selectDept',
+      message: `Enter the department the new role corresponds to:`
+    }
+  ])
+  .then (({ titleName, newSalary, selectDept }) =>{
+    console.log(titleName, newSalary, selectDept)
+    // connection.query('INSERT INTO role SET')
+  })
+  .catch(err => console.log(err))
+}
 
 // function to add a department to database
 // let addDepartment = () => {
