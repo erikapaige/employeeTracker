@@ -70,14 +70,14 @@ let start = () => {
   .catch(err => console.log(err))
 }
 
-
+// function that creates a table of employees and their data
 let viewAllEmployees = () => {
-  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id', function(err, res) {
+  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id',  (err, res) => {
     if (err) { console.log(err) }
     //log results from SELECT statement
     console.table(res)
 
-  // needs to wait until query given answer
+  // user prompt if would like to continue to add data or exit
   prompt([
     {
       type: 'list',
@@ -104,7 +104,7 @@ let viewAllEmployees = () => {
 //   db.query('SELECT * FROM department', (err, data) => {
 //   if (err) { console.log(err) }
 //   console.table(data)
-//   })
+ 
 //   //needs to wait until query given answer
 //   prompt([
 //     {
@@ -125,9 +125,38 @@ let viewAllEmployees = () => {
 //       }
 //     })
 //     .catch(err => console.log(err))
+//   })
 // } 
 
-// viewEmployeeManager()
+// function that sorts employees by manager
+let viewEmployeeManager = () => {
+  connection.query('SELECT employee.first_name AS "first name", employee.last_name AS "last name", CONCAT (manager.first_name, " " , manager.last_name) AS manager FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id', (err, res) => {
+    if (err) { console.log(err) }
+    // log results from SELECT statement
+    console.table(res)
+
+    // user prompt if would like to continue to add data or exit
+    // prompt([
+    //   {
+    //     type: 'list',
+    //     name: 'update',
+    //     message: 'Would you like to continue updating the data?',
+    //     choices: ['Yes', 'No']
+    //   }
+    // ])
+    //   .then(({ update }) => {
+    //     switch (update) {
+    //       case 'Yes':
+    //         start()
+    //         break
+    //       case 'No':
+    //         exit()
+    //         break
+    //     }
+    //   })
+    //   .catch(err => console.log(err))
+  })
+} 
 
 // let addEmployee() => {
 //     prompt([
@@ -158,6 +187,7 @@ let viewAllEmployees = () => {
 
 // updateEmployeeManager()
 
+// exit function
 let exit = () => {
   console.log('exit')
   connection.end()
