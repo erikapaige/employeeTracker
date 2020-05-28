@@ -19,7 +19,7 @@ npm i mysql2
 This is a command line application that allows employers to manage departments, roles, and employees in their company database. The application permits employers to view, add, update or delete specific data points.
 
 ## Demo
-![gif](/gif/employeeTracker.gif"gif")
+![gif](/giph/employeeTracker.gif"gif")
 
 <br>
 <br>
