@@ -34,7 +34,7 @@ let start = () => {
     type:'list',
     name:'questions',
     message: 'What would you like to do?',
-    choices: ['View All Employees', 'View All Employees By Department', 'View All Employee By Manager', 'View Roles', 'View Departments', 'Add Employee', 'Add Role', 'Add Department', 'Update Employee Role', 'Exit']
+    choices: ['View All Employees', 'View All Employees By Department', 'View Roles', 'View Departments', 'Add Employee', 'Add Role', 'Add Department', 'Update Employee Role', 'Exit']
     }
   ])
   .then (({ questions }) =>{ 
@@ -46,9 +46,6 @@ let start = () => {
         break
       case 'View All Employees By Department':
         viewEmployeeDepartment()
-        break
-      case 'View All Employees by Manager':
-        viewEmployeeManager()
         break
       case 'View Roles':
         viewRoles()
@@ -223,7 +220,7 @@ let addEmployee = () => {
       //function to prompt user: continue to add data or exit
       decision()  
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(err)) 
 }
 
 // function to add role to database
@@ -270,19 +267,19 @@ let addRole = () => {
   ])
   .then (({ titleName, newSalary, selectDept }) =>{
     //console.log to check that responses render
-    console.log(titleName, newSalary, selectDept)
-    // connection.query('INSERT INTO role SET ?',
-    // {
-    //   title: `${titleName}`,
-    //   salary: `${newSalary}`,
-    //   department_id: `${selectDept}.value`
-    // }, (err, res) => {
-    //   if (err) { console.log(err) }
-        //add line break
-        // console.log('\n')
-    //   //is there a way to show the new added role?
-    //   console.table(res.affectedRows + "role added!\n")
-    // })
+    // console.log(titleName, newSalary, selectDept)
+    connection.query('INSERT INTO role SET ?',
+    {
+      title: `${titleName}`,
+      salary: `${newSalary}`,
+      department_id: `${selectDept}`
+    }, (err, res) => {
+      if (err) { console.log(err) }
+        // add line break
+        console.log('\n')
+      //is there a way to show the new added role?
+      console.table(res.affectedRows + "role added!\n")
+    })
     //function to prompt user: continue to add data or exit
     decision() 
   })
@@ -368,11 +365,11 @@ updateEmployeeRole = () => {
       ]
     }
   ]) 
-    .then(({ firstName, lastName, updateEmployeeRole }) => {
-      //console.log to check that responses render
-      console.log(firstName, lastName, updateEmployeeRole)
-      // function to prompt user: continue to add data or exit
-      decision() 
+  .then(({ firstName, lastName, updateEmployeeRole }) => {
+  //console.log to check that responses render
+  console.log(firstName, lastName, updateEmployeeRole)
+  // function to prompt user: continue to add data or exit
+  decision() 
   })
   .catch(err => console.log(err))
 }
